@@ -1,6 +1,6 @@
 package com.nisarg.school;
 
 public interface School {
-    Student admitStudent(String name, int age, String grade);
+    Student admitStudent(Student student) throws ClassFullException;
     Double chargeFees(Student student);
 }
