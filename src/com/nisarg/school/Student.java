@@ -7,11 +7,10 @@ public class Student {
     String studentId;
 
 
-    public Student(String name, Integer age, GradeType grade, String studentId) {
+    public Student(String name, Integer age, GradeType grade) {
         this.name = name;
         this.age = age;
         this.grade = grade;
-        this.studentId = studentId;
     }
 
     public String getName() {
