@@ -1,6 +1,7 @@
 package com.nisarg.school;
 
 import java.util.Scanner;
+import java.util.UUID;
 
 import static com.nisarg.school.SchoolType.*;
 
@@ -11,46 +12,73 @@ public class Main {
     static School highSchool = new HighSchool();
 
     public static void main(String[] args) {
-        //1. Show the prompts on console  - done
-        System.out.println("Welcome to School Admissions App, Press X for Exit");
-        System.out.println("Enter the name of the student");
-        Scanner scanner = new Scanner(System.in);
-        String name = scanner.nextLine();
-        System.out.println("Enter the age of the student");
-        Integer age = scanner.nextInt();
-        System.out.println("name: " + name + "age:" + age);
-        //3. determine name is not too long/short , also age is not too low/high
-        if (name.length() >= 50 || name.length() < 3) {
-            System.out.println("name is too long or too short ");
-        }
-        if (age < 4 || age > 17) {
-            System.out.println("age is too low or too high ");
-        }
-        //4. determineGradeBasedOnage()
-        GradeType grade = null;
-        try {
-            grade = determineGradeBasedOnAge(age);
-        } catch (AgeNotCorrectException e) {
-            System.out.println(" age is too high or too low");
-        }
-        //5. determineSchoolBasedOnGrade()
-        SchoolType schoolType = null;
-        try {
-            schoolType = determineSchoolBasedOnGrade(grade);
-        } catch (GradeNotCorrectException e) {
-            System.out.println(" grade not correct , please fix");
-        }
-        //6. schooladmitStudent()
-        Student student = new Student(name, age, grade);
-        School school = retrieveSchoolObjectBasedOnSchoolType(schoolType);
-        try {
-            school.admitStudent(student);
-        } catch (ClassFullException e) {
-            System.out.println("Sorry the class for grade#" + grade + " is full, please try another student");
-        }
-        System.out.println("welcome ... ");
+        char userInp = 'a';
+        do {
+            //1. Show the prompts on console  - done
+            System.out.println("Welcome to School Admissions App, Press X for Exit");
+            System.out.println("Enter the name of the student");
+            Scanner scanner = new Scanner(System.in);
+            String name = scanner.nextLine();
+            while (true) {
+                if (name.length() >= 50 || name.length() < 3) {
+                    System.out.println("name is too long or too short \n" +
+                            "Enter name again: ");
+                    name = scanner.nextLine();
+                } else
+                    break;
+            }
+            System.out.println("Enter the age of the student");
+            Integer age = scanner.nextInt();
+            while (true) {
+                if (age < 4 || age > 17) {
+                    System.out.println("age is too low or too high \n " +
+                            "Please enter age of the student again: ");
+                    age = scanner.nextInt();
+                } else
+                    break;
+
+            }
+
+            System.out.println("name: " + name + " \nage:" + age);
 
 
+            //4. determineGradeBasedOnage()
+            GradeType grade = null;
+            try {
+                grade = determineGradeBasedOnAge(age);
+            } catch (AgeNotCorrectException e) {
+                System.out.println(" age is too high or too low");
+            }
+            //5. determineSchoolBasedOnGrade()
+            SchoolType schoolType = null;
+            try {
+                schoolType = determineSchoolBasedOnGrade(grade);
+            } catch (GradeNotCorrectException e) {
+                System.out.println(" grade not correct , please fix");
+            }
+
+            // Generating UUID
+            UUID uuid = UUID.randomUUID();
+            String studID = uuid.toString();
+            System.out.println("Student ID: "+ studID);
+
+            //6. schooladmitStudent()
+            Student student = new Student(name, age, grade, studID);
+            School school = retrieveSchoolObjectBasedOnSchoolType(schoolType);
+            try {
+                school.admitStudent(student);
+            } catch (ClassFullException e) {
+                System.out.println("Sorry the class for grade#" + grade + " is full, please try another student");
+                continue;
+            }
+
+
+            System.out.println("welcome ... ");
+
+            System.out.println("Do you want to admit new student? \n" +
+                    "Press any key to continue OR X to exit");
+            userInp = scanner.next().charAt(0);
+        } while (userInp != 'X');
 
     }
 
@@ -116,7 +144,7 @@ public class Main {
             case 12:
                 return GradeType.SEVENTH_GRADE;
             case 13:
-                return GradeType.EIGHTH_GRADE ;
+                return GradeType.EIGHTH_GRADE;
             case 14:
                 return GradeType.NINTH_GRADE;
             case 15:
